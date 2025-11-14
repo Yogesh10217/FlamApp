@@ -26,17 +26,31 @@ class FullScreenQuad {
     """.trimIndent()
 
     private val verts = floatArrayOf(
-        -1f, 1f, 0f, 0f,   // top-left (pos.x,pos.y, tex.u, tex.v)
-        -1f, -1f, 0f, 1f,  // bottom-left
+        -1f,  1f, 0f, 0f,   // top-left (pos.x, pos.y, tex.u, tex.v)
+        -1f, -1f, 0f, 1f,   // bottom-left
         1f, -1f, 1f, 1f,   // bottom-right
-        1f, 1f, 1f, 0f     // top-right
+        1f,  1f, 1f, 0f    // top-right
     )
-    private val idx = shortArrayOf(0,1,2, 0,2,3)
+
+    private val idx = shortArrayOf(0, 1, 2, 0, 2, 3)
+
     private val vertexBuffer: FloatBuffer =
-        ByteBuffer.allocateDirect(verts.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().apply { put(verts); position(0) }
-    private val indexBuffer = ByteBuffer.allocateDirect(idx.size * 2).order(ByteOrder.nativeOrder()).apply {
-        asShortBuffer().put(idx); position(0)
-    }
+        ByteBuffer.allocateDirect(verts.size * 4)
+            .order(ByteOrder.nativeOrder())
+            .asFloatBuffer()
+            .apply {
+                put(verts)
+                position(0)
+            }
+
+    private val indexBuffer =
+        ByteBuffer.allocateDirect(idx.size * 2)
+            .order(ByteOrder.nativeOrder())
+            .apply {
+                asShortBuffer().put(idx)
+                position(0)
+            }
+
     private var program = 0
     private var aPosition = 0
     private var aTexCoord = 0
@@ -51,18 +65,27 @@ class FullScreenQuad {
 
     fun draw(textureId: Int) {
         GLES20.glUseProgram(program)
+
         vertexBuffer.position(0)
         GLES20.glEnableVertexAttribArray(aPosition)
-        GLES20.glVertexAttribPointer(aPosition, 2, GLES20.GL_FLOAT, false, 16, vertexBuffer)
+        GLES20.glVertexAttribPointer(
+            aPosition, 2, GLES20.GL_FLOAT, false, 16, vertexBuffer
+        )
 
         vertexBuffer.position(2)
         GLES20.glEnableVertexAttribArray(aTexCoord)
-        GLES20.glVertexAttribPointer(aTexCoord, 2, GLES20.GL_FLOAT, false, 16, vertexBuffer)
+        GLES20.glVertexAttribPointer(
+            aTexCoord, 2, GLES20.GL_FLOAT, false, 16, vertexBuffer
+        )
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId)
         GLES20.glUniform1i(uTexture, 0)
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6, GLES20.GL_UNSIGNED_SHORT, indexBuffer)
+
+        GLES20.glDrawElements(
+            GLES20.GL_TRIANGLES, 6, GLES20.GL_UNSIGNED_SHORT, indexBuffer
+        )
+
         GLES20.glDisableVertexAttribArray(aPosition)
         GLES20.glDisableVertexAttribArray(aTexCoord)
     }
