@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "C:\\Users\\Yogesh E\\AndroidStudioProjects\\Flamapp\\app\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\Yogesh E\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\Yogesh E\\AndroidStudioProjects\\Flamapp\\app\\.cxx\\RelWithDebInfo\\6m4t322x\\arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\Yogesh E\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\Yogesh E\\AndroidStudioProjects\\Flamapp\\app\\.cxx\\RelWithDebInfo\\6m4t322x\\arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "flamapp::@6890427a1f51a3e7e1df": {
+      "artifactName": "flamapp",
+      "abi": "arm64-v8a",
+      "output": "C:\\Users\\Yogesh E\\AndroidStudioProjects\\Flamapp\\app\\build\\intermediates\\cxx\\RelWithDebInfo\\6m4t322x\\obj\\arm64-v8a\\libflamapp.so",
+      "runtimeFiles": []
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 Android app with OpenCV C++ edge detection processing via JNI, rendered using OpenGL ES 2.0.
 
-## 🎯 Features Implemented
+## ✅ Features Implemented
 
 ### Android Application
 - ✅ Camera2 API integration for frame capture (640x480 @ ~15-30 FPS)
@@ -18,6 +18,12 @@ Android app with OpenCV C++ edge detection processing via JNI, rendered using Op
 - ✅ TypeScript-based static viewer
 - ✅ Base64 image display
 - ✅ FPS and resolution stats overlay
+
+## 📷 Screenshots
+
+![Flamapp Output Screenshot](Output%20Screen%20shot.png)
+
+*Screenshot showing the real-time edge detection output on Android device*
 
 ## 📁 Project Structure
 
@@ -37,7 +43,7 @@ Flamapp/
 │   │   │   │   └── layout/
 │   │   │   │       └── activity_main.xml
 │   │   │   └── AndroidManifest.xml
-│   │   └── build.gradle
+│   │   │   └── build.gradle
 ├── external-libs/
 │   └── OpenCV-android-sdk/
 │       └── sdk/
@@ -55,7 +61,7 @@ Flamapp/
 └── README.md
 ```
 
-## 🛠️ Setup Instructions
+## ⚙ Setup Instructions
 
 ### Prerequisites
 1. **Android Studio** (Flamingo or later)
@@ -141,36 +147,10 @@ Open `web/index.html` in a browser to see the static demo.
 ```bash
 adb logcat | grep -E "MainActivity|FlamappNative|OpenGL|AndroidRuntime"
 ```
-
-**2. Common Issues:**
-
-#### UnsatisfiedLinkError: Native library not found
-- **Cause**: OpenCV .so files not found
-- **Solution**:
-  ```bash
-  # Verify OpenCV libraries exist
-  ls external-libs/OpenCV-android-sdk/sdk/native/libs/arm64-v8a/libopencv_java4.so
-  ls external-libs/OpenCV-android-sdk/sdk/native/libs/armeabi-v7a/libopencv_java4.so
-  ```
-- If missing, re-download OpenCV Android SDK
-
-#### Camera Permission Denied
-- **Solution**:
-    - Uninstall app: `adb uninstall com.example.flamapp`
-    - Reinstall and grant permission
-    - Or manually grant: Settings → Apps → Flamapp → Permissions → Camera
-
 #### OpenGL Context Error
 - **Check device support**: Ensure device supports OpenGL ES 2.0
 - **Emulator settings**: Use a system image with Google Play (has better OpenGL support)
 
-#### CMake can't find OpenCV
-- **Error**: `OpenCV libs not found at ...`
-- **Solution**: Verify the path in CMakeLists.txt matches your directory structure:
-  ```cmake
-  set(OPENCV_SDK_ROOT "${CMAKE_SOURCE_DIR}/../../../../external-libs/OpenCV-android-sdk")
-  ```
-- Count the `../` carefully based on your CMakeLists.txt location
 
 ### Build Errors
 
@@ -221,130 +201,37 @@ tsc --version  # Should be 4.9+
 npm run build
 ```
 
-## 🏗️ Architecture
+## 🧠 Architecture
 
-### Data Flow
+### Quick Overview
 
-```
-Camera2 API (YUV_420_888)
-    ↓
-Convert to NV21
-    ↓
-JNI → native-lib.cpp
-    ↓
-OpenCV Processing:
-  - NV21 → RGBA
-  - Gaussian Blur
-  - Canny Edge Detection
-  - RGBA output
-    ↓
-Return to Kotlin
-    ↓
-GLRenderer (OpenGL ES 2.0)
-    ↓
-Display on GLSurfaceView
-```
+Flamapp demonstrates a sophisticated cross-platform architecture combining Android native development with web technologies:
 
-### Key Components
+#### JNI & Frame Flow
+- **JNI Bridge**: Kotlin (MainActivity.kt) calls native C++ functions via JNI for high-performance image processing
+- **Frame Processing Pipeline**:
+  ```
+  Camera2 API (YUV_420_888) → NV21 Conversion → JNI → native-lib.cpp (OpenCV Canny) → PNG Output → OpenGL ES 2.0 Rendering
+  ```
+- **Native Processing**: OpenCV handles color space conversions, Gaussian blur, and Canny edge detection in C++ for optimal performance
 
-#### 1. native-lib.cpp
-- **Input**: NV21 byte array from camera
-- **Processing**:
-    - Color space conversion (NV21 → RGBA)
-    - Grayscale conversion
-    - Gaussian blur (noise reduction)
-    - Canny edge detection
-- **Output**: RGBA byte array for OpenGL
+#### TypeScript Web Component
+- **Static Viewer**: TypeScript-based web interface for displaying processed frames
+- **Data Handling**: Base64-encoded images with real-time stats overlay (FPS, resolution, processing time)
+- **Integration Ready**: Designed for future WebSocket/HTTP integration with Android app
 
-#### 2. MainActivity.kt
-- Camera2 API setup and management
-- Frame capture and conversion (YUV → NV21)
-- JNI calls to native processing
-- FPS calculation and UI updates
-- Background thread management
+### Key Technical Components
 
-#### 3. GLRenderer.kt + FullScreenQuad.kt
-- OpenGL ES 2.0 context management
-- Texture creation and updates
-- Shader compilation and rendering
-- Full-screen quad display
-
-#### 4. Web Viewer (TypeScript)
-- Static sample frame display
-- Stats overlay (FPS, resolution)
-- Demonstrates TypeScript integration
-
-## 📊 Performance Metrics
-
-Tested configurations:
-
-| Device | Resolution | FPS | Processing Time |
-|--------|-----------|-----|-----------------|
-| Samsung Galaxy S21 | 640x480 | 25-30 | 30-40 ms |
-| Google Pixel 6 | 640x480 | 20-28 | 35-45 ms |
-| OnePlus 9 | 640x480 | 22-30 | 32-42 ms |
-
-*Note: Performance varies by device CPU/GPU*
-
-## 🔄 Git Usage
-
-This project should be committed with meaningful messages:
-
-```bash
-# Initial setup
-git init
-git add .
-git commit -m "Initial project setup with OpenCV integration"
-
-# After implementing camera
-git add app/src/main/java/com/example/flamapp/MainActivity.kt
-git commit -m "Implement Camera2 API with YUV to NV21 conversion"
-
-# After native processing
-git add app/src/main/cpp/
-git commit -m "Add OpenCV Canny edge detection in native layer"
-
-# After OpenGL rendering
-git add app/src/main/java/com/example/flamapp/GL*.kt
-git commit -m "Implement OpenGL ES 2.0 rendering pipeline"
-
-# After web viewer
-git add web/
-git commit -m "Add TypeScript web viewer for processed frames"
-
-# Documentation
-git add README.md
-git commit -m "Add comprehensive documentation and setup guide"
-```
-
-## 📝 Future Improvements
-
-- [ ] Add real-time parameter tuning (Canny threshold sliders)
-- [ ] Implement other filters (Sobel, Laplacian, Bilateral)
-- [ ] Save processed frames to gallery
-- [ ] Add recording functionality
-- [ ] WebSocket integration for live web streaming
-- [ ] Multi-threaded processing pipeline
-- [ ] Custom GLSL shader effects
-- [ ] Face detection integration
-- [ ] Performance profiling tools
-
-## 📄 License
-
-MIT License - Free to use for learning and development
-
-## 🙏 Acknowledgments
-
-- **OpenCV** - Open Source Computer Vision Library
-- **Android Camera2 API** - Modern camera framework
-- **OpenGL ES** - Cross-platform graphics API
+1. **native-lib.cpp**: C++ OpenCV processing (NV21→RGBA→Grayscale→Blur→Canny→PNG encoding)
+2. **MainActivity.kt**: Camera management, JNI calls, UI controls, background threading
+3. **GLRenderer.kt**: OpenGL ES 2.0 texture rendering and shader management
+4. **index.ts**: TypeScript utilities for image display and stats visualization
 
 ## 📧 Contact
 
 For questions about this assessment submission:
-- GitHub: [Your GitHub Profile]
-- Email: [Your Email]
+- GitHub: [https://github.com/Yogesh10217]
+- Email: [eyogesh104@gmail.com]
 
 ---
 
-**Note**: This project was developed as part of a Software Engineering Intern (R&D) technical assessment, demonstrating proficiency in Android development, JNI/NDK, OpenCV, OpenGL ES, and TypeScript.
