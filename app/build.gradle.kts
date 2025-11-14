@@ -16,18 +16,21 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Native flags (still valid here)
         externalNativeBuild {
             cmake {
-                cppFlags += "-std=c++17"
+                // ensure C++ standard and enable exceptions and RTTI
+                // If cppFlags already exists, add these flags to it.
+                cppFlags += listOf("-std=c++17", "-fexceptions", "-frtti")
+                // Tell CMake/NDK to use the shared libc++ runtime
+                arguments += listOf("-DANDROID_STL=c++_shared")
             }
         }
 
-        // Restrict ABIs you want to produce (reduces APK size)
         ndk {
             abiFilters += listOf("armeabi-v7a", "arm64-v8a")
         }
     }
+
 
     buildTypes {
         release {
