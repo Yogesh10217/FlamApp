@@ -1,0 +1,1 @@
+C:\Users\Yogesh E\AndroidStudioProjects\Flamapp\app\build\intermediates\cxx\RelWithDebInfo\365i1g3k\obj\arm64-v8a

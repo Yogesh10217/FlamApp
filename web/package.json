@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && npx live-server --port=8080 --root=src --open=src/index.html"
+    "watch": "tsc -w",
+    "serve": "npx live-server --root=. --open=src/index.html --port=8080",
+    "dev": "npm run watch"
   },
   "devDependencies": {
     "typescript": "^5.1.6",

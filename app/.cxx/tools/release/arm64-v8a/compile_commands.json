@@ -1,0 +1,7 @@
+[
+{
+  "directory": "C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/.cxx/RelWithDebInfo/365i1g3k/arm64-v8a",
+  "command": "C:\\Users\\YOGESH~1\\AppData\\Local\\Android\\Sdk\\ndk\\270~1.120\\TOOLCH~1\\llvm\\prebuilt\\WINDOW~1\\bin\\CLANG_~1.EXE --target=aarch64-none-linux-android24 --sysroot=\"C:/Users/Yogesh E/AppData/Local/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/windows-x86_64/sysroot\" -Dflamapp_EXPORTS -I\"C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/src/main/cpp/../../../../external-libs/OpenCV-android-sdk/sdk/native/jni/include\" -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O2 -g -DNDEBUG -fPIC -o CMakeFiles\\flamapp.dir\\native-lib.cpp.o -c \"C:\\Users\\Yogesh E\\AndroidStudioProjects\\Flamapp\\app\\src\\main\\cpp\\native-lib.cpp\"",
+  "file": "C:\\Users\\Yogesh E\\AndroidStudioProjects\\Flamapp\\app\\src\\main\\cpp\\native-lib.cpp"
+}
+]

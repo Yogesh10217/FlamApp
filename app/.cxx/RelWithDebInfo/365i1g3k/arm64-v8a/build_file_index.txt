@@ -1,0 +1,1 @@
+C:\Users\Yogesh E\AndroidStudioProjects\Flamapp\app\src\main\cpp\CMakeLists.txt

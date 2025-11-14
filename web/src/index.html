@@ -1,14 +1,65 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Edge Viewer</title>
-    <style>body{font-family:Arial;padding:12px}#frame{max-width:100%;border:1px solid #ccc}#stats{white-space:pre-line;margin-top:8px}</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edge Viewer - Flamapp</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #ffffff;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h3 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        #frame {
+            max-width: 100%;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            background: #000;
+            display: block;
+            margin: 20px 0;
+        }
+
+        #stats {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-line;
+            margin-top: 15px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .info {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
-<h3>Edge Viewer (sample)</h3>
+<h3>🎨 Edge Detection Viewer (Sample)</h3>
+
 <img id="frame" alt="processed frame" />
+
 <div id="stats"></div>
-<script src="../dist/index.js"></script>
+
+<div class="info">
+    <strong>Note:</strong> This is a static demo showing a sample processed frame.
+    In a production setup, this would connect via WebSocket or HTTP to receive
+    live processed frames from the Android app.
+</div>
+
+<script src="dist/index.js"></script>
 </body>
 </html>

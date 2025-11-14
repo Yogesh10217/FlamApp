@@ -1,0 +1,16 @@
+# ninja log v5
+5	209	7847975432920939	build.ninja	36c188752b821932
+7	2069	7847554103976284	CMakeFiles/flamapp.dir/native-lib.cpp.o	c234dd280e365036
+2070	2214	7847554105495901	C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/build/intermediates/cxx/RelWithDebInfo/365i1g3k/obj/armeabi-v7a/libflamapp.so	71edbfffcebe1324
+0	15	0	clean	f4e5c00c64afc96a
+9	2408	7847975457812877	CMakeFiles/flamapp.dir/native-lib.cpp.o	c234dd280e365036
+2409	2610	7847975460013390	C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/build/intermediates/cxx/RelWithDebInfo/365i1g3k/obj/armeabi-v7a/libflamapp.so	71edbfffcebe1324
+0	12	0	clean	f7771ca0ee2cad19
+8	3112	7847984452265186	CMakeFiles/flamapp.dir/native-lib.cpp.o	c234dd280e365036
+3114	3347	7847984454755653	C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/build/intermediates/cxx/RelWithDebInfo/365i1g3k/obj/armeabi-v7a/libflamapp.so	71edbfffcebe1324
+0	16	0	clean	f7771ca0ee2cad19
+15	2895	7847997218929565	CMakeFiles/flamapp.dir/native-lib.cpp.o	c234dd280e365036
+2896	3059	7847997220679596	C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/build/intermediates/cxx/RelWithDebInfo/365i1g3k/obj/armeabi-v7a/libflamapp.so	71edbfffcebe1324
+0	13	0	clean	f7771ca0ee2cad19
+8	2358	7848015350419358	CMakeFiles/flamapp.dir/native-lib.cpp.o	c234dd280e365036
+2359	2494	7848015351831576	C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/build/intermediates/cxx/RelWithDebInfo/365i1g3k/obj/armeabi-v7a/libflamapp.so	71edbfffcebe1324
