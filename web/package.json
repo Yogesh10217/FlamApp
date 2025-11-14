@@ -1,0 +1,13 @@
+{
+  "name": "edge-viewer-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && npx live-server --port=8080 --root=src --open=src/index.html"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6",
+    "live-server": "^1.2.2"
+  }
+}
