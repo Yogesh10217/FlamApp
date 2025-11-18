@@ -1,9 +1,7 @@
 # ninja log v5
-1	3522	7848049237150246	CMakeFiles/flamapp.dir/native-lib.cpp.o	6e57dee5ac7cc080
-3533	3762	7848049239758496	C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/build/intermediates/cxx/Debug/4j3u2l5r/obj/armeabi-v7a/libflamapp.so	218f155b11354005
-0	11	0	clean	f7771ca0ee2cad19
-13	1902	7848053487971127	CMakeFiles/flamapp.dir/native-lib.cpp.o	6e57dee5ac7cc080
-1903	2033	7848053489336473	C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/build/intermediates/cxx/Debug/4j3u2l5r/obj/armeabi-v7a/libflamapp.so	218f155b11354005
-0	17	0	clean	f7771ca0ee2cad19
 13	3130	7848061182837372	CMakeFiles/flamapp.dir/native-lib.cpp.o	6e57dee5ac7cc080
 3135	3449	7848061186381919	C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/build/intermediates/cxx/Debug/4j3u2l5r/obj/armeabi-v7a/libflamapp.so	218f155b11354005
+0	17	0	clean	f7771ca0ee2cad19
+38	381	7851527978177589	build.ninja	62162cb5f2672887
+0	13	0	clean	f4e5c00c64afc96a
+0	23	0	clean	f4e5c00c64afc96a

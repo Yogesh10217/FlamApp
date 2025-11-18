@@ -130,7 +130,7 @@ CMAKE_LIBRARY_OUTPUT_DIRECTORY:UNINITIALIZED=C:\Users\Yogesh E\AndroidStudioProj
 CMAKE_LINKER:FILEPATH=C:/Users/Yogesh E/AppData/Local/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld.exe
 
 //make program
-CMAKE_MAKE_PROGRAM:FILEPATH=C:/Users/Yogesh E/AppData/Local/Android/Sdk/cmake/3.22.1/bin/ninja.exe
+CMAKE_MAKE_PROGRAM:FILEPATH=C:/Users/YOGESH~1/AppData/Local/Android/Sdk/cmake/322~1.1/bin/ninja.exe
 
 //Flags used by the linker during the creation of modules.
 CMAKE_MODULE_LINKER_FLAGS:STRING=
@@ -250,9 +250,6 @@ flamapp_BINARY_DIR:STATIC=C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/.c
 
 //Value Computed by CMake
 flamapp_IS_TOP_LEVEL:STATIC=ON
-
-//Dependencies for the target
-flamapp_LIB_DEPENDS:STATIC=general;opencv_java4;general;C:/Users/Yogesh E/AppData/Local/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/24/liblog.so;general;C:/Users/Yogesh E/AppData/Local/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/24/libandroid.so;general;c++_shared;
 
 //Value Computed by CMake
 flamapp_SOURCE_DIR:STATIC=C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/src/main/cpp

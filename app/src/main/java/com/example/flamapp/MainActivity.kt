@@ -18,7 +18,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.hardware.camera2.*
 import android.widget.Toast
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private lateinit var textureView: TextureView
@@ -43,12 +42,24 @@ class MainActivity : AppCompatActivity() {
         private const val CAMERA_PERMISSION_CODE = 100
     }
 
-    // Native method (unchanged)
+    // Declare native method
     external fun processFrameNV21(input: ByteArray, width: Int, height: Int): ByteArray?
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "=== onCreate ===")
+
+        // Check if native libraries are loaded
+        if (!FlamappApplication.isNativeLoaded()) {
+            Log.e(TAG, "✗✗✗ Native libraries NOT loaded! ✗✗✗")
+            Toast.makeText(
+                this,
+                "Native libraries failed to load. Check logcat.",
+                Toast.LENGTH_LONG
+            ).show()
+        } else {
+            Log.d(TAG, "✓ Native libraries confirmed loaded")
+        }
 
         setContentView(R.layout.activity_main)
 
@@ -65,12 +76,19 @@ class MainActivity : AppCompatActivity() {
                 textureView.visibility = android.view.View.GONE
                 glSurface.visibility = android.view.View.VISIBLE
                 toggleButton.text = "Mode: Processed"
+                Log.d(TAG, "Switched to PROCESSED mode")
             } else {
                 textureView.visibility = android.view.View.VISIBLE
                 glSurface.visibility = android.view.View.GONE
                 toggleButton.text = "Mode: Raw"
+                Log.d(TAG, "Switched to RAW mode")
             }
         }
+
+        // Ensure we start in processed mode
+        textureView.visibility = android.view.View.GONE
+        glSurface.visibility = android.view.View.VISIBLE
+        toggleButton.text = "Mode: Processed"
 
         // Setup OpenGL
         try {
@@ -78,9 +96,9 @@ class MainActivity : AppCompatActivity() {
             glRenderer = GLRenderer(640, 480)
             glSurface.setRenderer(glRenderer)
             glSurface.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
-            Log.d(TAG, "OpenGL setup complete")
+            Log.d(TAG, "✓ OpenGL setup complete")
         } catch (e: Exception) {
-            Log.e(TAG, "OpenGL setup failed", e)
+            Log.e(TAG, "✗ OpenGL setup failed", e)
             Toast.makeText(this, "OpenGL initialization failed", Toast.LENGTH_SHORT).show()
         }
 
@@ -90,7 +108,6 @@ class MainActivity : AppCompatActivity() {
         // Check and request permission
         if (hasCameraPermission()) {
             Log.d(TAG, "Permission already granted")
-            // Wait a bit before opening camera
             Handler(Looper.getMainLooper()).postDelayed({
                 setupCamera()
             }, 100)
@@ -127,10 +144,10 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             CAMERA_PERMISSION_CODE -> {
                 if (grantResults.isNotEmpty() &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG, "Permission GRANTED")
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    Log.d(TAG, "✓ Permission GRANTED")
 
-                    // Important: Post delayed to avoid lifecycle issues
                     Handler(Looper.getMainLooper()).postDelayed({
                         if (!isFinishing && !isDestroyed) {
                             Log.d(TAG, "Setting up camera after permission grant")
@@ -138,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }, 500)
                 } else {
-                    Log.e(TAG, "Permission DENIED")
+                    Log.e(TAG, "✗ Permission DENIED")
                     Toast.makeText(
                         this,
                         "Camera permission is required to use this app",
@@ -153,7 +170,7 @@ class MainActivity : AppCompatActivity() {
     private fun startBackgroundThread() {
         cameraThread = HandlerThread("CameraThread").also { it.start() }
         cameraHandler = Handler(cameraThread!!.looper)
-        Log.d(TAG, "Background thread started")
+        Log.d(TAG, "✓ Background thread started")
     }
 
     private fun stopBackgroundThread() {
@@ -162,7 +179,7 @@ class MainActivity : AppCompatActivity() {
             cameraThread?.join()
             cameraThread = null
             cameraHandler = null
-            Log.d(TAG, "Background thread stopped")
+            Log.d(TAG, "✓ Background thread stopped")
         } catch (e: InterruptedException) {
             Log.e(TAG, "Error stopping background thread", e)
         }
@@ -175,7 +192,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (!hasCameraPermission()) {
-            Log.e(TAG, "No camera permission")
+            Log.e(TAG, "✗ No camera permission")
             return
         }
 
@@ -184,9 +201,6 @@ class MainActivity : AppCompatActivity() {
         try {
             val cameraId = manager.cameraIdList[0]
             Log.d(TAG, "Opening camera: $cameraId")
-
-            val characteristics = manager.getCameraCharacteristics(cameraId)
-            val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
 
             // Setup ImageReader
             imageReader = ImageReader.newInstance(640, 480, ImageFormat.YUV_420_888, 2)
@@ -200,7 +214,7 @@ class MainActivity : AppCompatActivity() {
                     Manifest.permission.CAMERA
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                Log.e(TAG, "No permission at open time")
+                Log.e(TAG, "✗ No permission at open time")
                 return
             }
 
@@ -218,7 +232,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onError(camera: CameraDevice, error: Int) {
-                    Log.e(TAG, "Camera error: $error")
+                    Log.e(TAG, "✗ Camera error: $error")
                     cameraDevice?.close()
                     cameraDevice = null
                     runOnUiThread {
@@ -232,9 +246,9 @@ class MainActivity : AppCompatActivity() {
             }, cameraHandler)
 
         } catch (e: CameraAccessException) {
-            Log.e(TAG, "CameraAccessException", e)
+            Log.e(TAG, "✗ CameraAccessException", e)
         } catch (e: Exception) {
-            Log.e(TAG, "Exception opening camera", e)
+            Log.e(TAG, "✗ Exception opening camera", e)
         }
     }
 
@@ -272,12 +286,12 @@ class MainActivity : AppCompatActivity() {
                             )
                             Log.d(TAG, "✓✓ Camera preview STARTED ✓✓")
                         } catch (e: CameraAccessException) {
-                            Log.e(TAG, "Failed to start preview", e)
+                            Log.e(TAG, "✗ Failed to start preview", e)
                         }
                     }
 
                     override fun onConfigureFailed(session: CameraCaptureSession) {
-                        Log.e(TAG, "Failed to configure camera")
+                        Log.e(TAG, "✗ Failed to configure camera")
                         Toast.makeText(
                             this@MainActivity,
                             "Camera configuration failed",
@@ -288,104 +302,84 @@ class MainActivity : AppCompatActivity() {
                 cameraHandler
             )
         } catch (e: CameraAccessException) {
-            Log.e(TAG, "CameraAccessException in startPreview", e)
+            Log.e(TAG, "✗ CameraAccessException in startPreview", e)
         }
     }
-    // debug: print plane strides once (remove/comment out after debugging)
-
-
 
     private fun handleImageAvailable(reader: ImageReader) {
         var image: Image? = null
         try {
             image = reader.acquireLatestImage()
-            if (image == null) return
+            if (image == null) {
+                Log.w(TAG, "Acquired null image")
+                return
+            }
 
-            // Debug logs: image size + plane strides
-            Log.d(TAG, "Image size: ${image.width}x${image.height}")
-            val p = image.planes
-            Log.d(TAG, "Y: rowStride=${p[0].rowStride}, pixelStride=${p[0].pixelStride}")
-            Log.d(TAG, "U: rowStride=${p[1].rowStride}, pixelStride=${p[1].pixelStride}")
-            Log.d(TAG, "V: rowStride=${p[2].rowStride}, pixelStride=${p[2].pixelStride}")
-
-            // Convert Image -> NV21 (your robust converter)
-            val nv21 = yuv420ToNV21(image)
-
-            // Quick test: build a YuvImage and compress to JPEG
             val width = image.width
             val height = image.height
-            val yuvImage = android.graphics.YuvImage(nv21, ImageFormat.NV21, width, height, null)
 
-            val baos = java.io.ByteArrayOutputStream()
-            val success = yuvImage.compressToJpeg(android.graphics.Rect(0, 0, width, height), 80, baos)
-            val jpegBytes = baos.toByteArray()
-            baos.close()
+            // Convert to NV21
+            val nv21 = yuv420ToNV21(image)
+            Log.v(TAG, "Converted to NV21, size: ${nv21.size} bytes")
 
-            if (!success) {
-                Log.e(TAG, "YuvImage.compressToJpeg returned false")
-            } else {
-                // Save file for later inspection (no runtime permission needed for app external dir)
-                try {
-                    val debugDir = File(getExternalFilesDir(null), "debug")
-                    if (!debugDir.exists()) debugDir.mkdirs()
-                    val ts = System.currentTimeMillis()
-                    val outFile = File(debugDir, "frame_${ts}.jpg")
-                    outFile.writeBytes(jpegBytes)
-                    Log.d(TAG, "Saved debug JPEG: ${outFile.absolutePath}")
-                } catch (ex: Exception) {
-                    Log.e(TAG, "Failed to save debug JPEG", ex)
-                }
+            // Check if native library is loaded
+            if (!FlamappApplication.isNativeLoaded()) {
+                Log.e(TAG, "✗✗✗ Native library not loaded, skipping processing ✗✗✗")
+                return
             }
 
-            // Decode JPEG to Bitmap (robust) and draw to TextureView for quick check
-            val bmp = android.graphics.BitmapFactory.decodeByteArray(jpegBytes, 0, jpegBytes.size)
-            if (bmp != null) {
-                runOnUiThread {
-                    try {
-                        // Lock canvas and draw the bitmap to textureView
-                        val canvas = textureView.lockCanvas()
-                        if (canvas != null) {
-                            // Clear and draw scaled to center-fit
-                            canvas.drawColor(android.graphics.Color.BLACK)
-                            val srcRect = android.graphics.Rect(0, 0, bmp.width, bmp.height)
-                            val dstRect = android.graphics.Rect(0, 0, textureView.width, textureView.height)
-                            canvas.drawBitmap(bmp, srcRect, dstRect, null)
-                            textureView.unlockCanvasAndPost(canvas)
-                        } else {
-                            Log.w(TAG, "textureView.lockCanvas returned null")
-                        }
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error drawing bitmap to textureView", e)
-                    }
-                }
-            } else {
-                Log.e(TAG, "Bitmap decode returned null")
-            }
-
-            // Continue existing pipeline: if native loaded, process with native and render via GLRenderer
-            // (Leave this commented for now while debugging)
-            /*
-            val processed = if (FlamappApplication.isNativeLoaded()) {
+            // Process frame with OpenCV
+            val start = System.nanoTime()
+            val processed = try {
                 processFrameNV21(nv21, width, height)
-            } else {
+            } catch (e: UnsatisfiedLinkError) {
+                Log.e(TAG, "✗✗✗ Native method call failed ✗✗✗", e)
+                null
+            } catch (e: Exception) {
+                Log.e(TAG, "✗✗✗ Error calling native method ✗✗✗", e)
                 null
             }
-            if (processed != null && processed.isNotEmpty()) {
+            val end = System.nanoTime()
+
+            if (processed == null) {
+                Log.e(TAG, "✗✗✗ processFrameNV21 returned NULL ✗✗✗")
+                return
+            }
+
+            Log.v(TAG, "✓ Processed frame size: ${processed.size} bytes")
+
+            val processingTime = (end - start) / 1_000_000f
+
+            // Update FPS
+            frameCount++
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastTime >= 1000) {
+                val fps = frameCount.toFloat() / ((currentTime - lastTime) / 1000f)
+                runOnUiThread {
+                    fpsText.text = String.format("FPS: %.1f | Proc: %.1f ms", fps, processingTime)
+                }
+                frameCount = 0
+                lastTime = currentTime
+            }
+
+            // Send to OpenGL for rendering
+            if (processed.isNotEmpty()) {
                 glSurface.queueEvent {
+                    Log.v(TAG, "Updating GL texture")
                     glRenderer.updateFrame(processed)
                     glSurface.requestRender()
                 }
+            } else {
+                Log.e(TAG, "✗ Processed frame is empty!")
             }
-            */
 
         } catch (e: Exception) {
-            Log.e(TAG, "Error processing frame (debug path)", e)
+            Log.e(TAG, "✗ Error processing frame", e)
+            e.printStackTrace()
         } finally {
             image?.close()
         }
     }
-
-
 
     private fun yuv420ToNV21(image: Image): ByteArray {
         val width = image.width
@@ -412,24 +406,24 @@ class MainActivity : AppCompatActivity() {
         val vRowStride = vPlane.rowStride
         val vPixelStride = vPlane.pixelStride
 
-        // Copy Y
+        // Copy Y plane
         var pos = 0
         for (row in 0 until height) {
             val yRowStart = row * yRowStride
             if (yPixelStride == 1) {
-                // contiguous, fast path
+                // Contiguous, fast path
                 yBuffer.position(yRowStart)
                 yBuffer.get(nv21, pos, width)
                 pos += width
             } else {
-                // uncommon pixel stride for Y
+                // Uncommon pixel stride for Y
                 for (col in 0 until width) {
                     nv21[pos++] = yBuffer.get(yRowStart + col * yPixelStride)
                 }
             }
         }
 
-        // Copy interleaved VU (NV21 expects V then U)
+        // Copy interleaved VU (NV21 format: V then U)
         val chromaHeight = height / 2
         val chromaWidth = width / 2
         var uvPos = ySize
@@ -439,15 +433,13 @@ class MainActivity : AppCompatActivity() {
             for (col in 0 until chromaWidth) {
                 val uIndex = uRowStart + col * uPixelStride
                 val vIndex = vRowStart + col * vPixelStride
-                nv21[uvPos++] = vBuffer.get(vIndex) // V
-                nv21[uvPos++] = uBuffer.get(uIndex) // U
+                nv21[uvPos++] = vBuffer.get(vIndex) // V first
+                nv21[uvPos++] = uBuffer.get(uIndex) // U second
             }
         }
 
         return nv21
     }
-
-
 
     private fun closeCamera() {
         try {
@@ -460,9 +452,9 @@ class MainActivity : AppCompatActivity() {
             imageReader?.close()
             imageReader = null
 
-            Log.d(TAG, "Camera closed")
+            Log.d(TAG, "✓ Camera closed")
         } catch (e: Exception) {
-            Log.e(TAG, "Error closing camera", e)
+            Log.e(TAG, "✗ Error closing camera", e)
         }
     }
 

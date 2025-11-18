@@ -1,19 +1,24 @@
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.22.1)
 project("flamapp")
 
-# Set OpenCV paths
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# OpenCV paths
 set(OPENCV_SDK_ROOT "${CMAKE_SOURCE_DIR}/../../../../external-libs/OpenCV-android-sdk")
 set(OPENCV_INCLUDE_DIR "${OPENCV_SDK_ROOT}/sdk/native/jni/include")
 
 if(NOT ANDROID_ABI)
-    message(FATAL_ERROR "ANDROID_ABI not set")
+    message(FATAL_ERROR "ANDROID_ABI not set!")
 endif()
 
 set(OPENCV_LIB_PATH "${OPENCV_SDK_ROOT}/sdk/native/libs/${ANDROID_ABI}")
 
-# Verify OpenCV exists
+# Verify OpenCV paths exist
 if(NOT EXISTS ${OPENCV_INCLUDE_DIR})
-    message(FATAL_ERROR "OpenCV include directory not found at: ${OPENCV_INCLUDE_DIR}")
+    message(FATAL_ERROR "OpenCV headers not found at: ${OPENCV_INCLUDE_DIR}")
 endif()
 
 if(NOT EXISTS ${OPENCV_LIB_PATH})
@@ -27,7 +32,7 @@ message(STATUS "✓ OpenCV lib path: ${OPENCV_LIB_PATH}")
 add_library(flamapp SHARED native-lib.cpp)
 
 # Include OpenCV headers
-include_directories(${OPENCV_INCLUDE_DIR})
+target_include_directories(flamapp PRIVATE ${OPENCV_INCLUDE_DIR})
 
 # Import OpenCV shared library
 set(OPENCV_SO "${OPENCV_LIB_PATH}/libopencv_java4.so")
@@ -43,14 +48,36 @@ message(STATUS "✓ Using OpenCV: ${OPENCV_SO}")
 find_library(log-lib log)
 find_library(android-lib android)
 
-# Link libraries
-# Link libraries (updated to include c++_shared)
-target_link_libraries(
-        flamapp
-        PRIVATE
+# Find C++ shared library (THIS IS CRITICAL!)
+find_library(cpp-lib c++_shared)
+
+if(NOT log-lib)
+    message(FATAL_ERROR "log library not found")
+endif()
+
+if(NOT cpp-lib)
+    message(WARNING "c++_shared not found via find_library, will link manually")
+    # Manually set path to libc++_shared.so
+    set(cpp-lib "${ANDROID_NDK}/sources/cxx-stl/llvm-libc++/libs/${ANDROID_ABI}/libc++_shared.so")
+endif()
+
+# Link libraries - ORDER MATTERS!
+target_link_libraries(flamapp
         opencv_java4
+        ${cpp-lib}        # C++ standard library (MUST BE INCLUDED!)
         ${log-lib}
         ${android-lib}
-        # Link the shared libc++ runtime so standard C++ symbols are available at runtime.
-        c++_shared
+        -latomic
+        -lm
 )
+
+# Copy OpenCV .so to jniLibs directory for APK packaging
+set(JNILIBS_DIR "${CMAKE_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}")
+add_custom_command(TARGET flamapp POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${JNILIBS_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${OPENCV_SO} ${JNILIBS_DIR}/
+        COMMENT "Copying OpenCV library to jniLibs/${ANDROID_ABI}/"
+)
+
+message(STATUS "✓ Will copy OpenCV to: ${JNILIBS_DIR}")
+message(STATUS "✓ CMake configuration complete")

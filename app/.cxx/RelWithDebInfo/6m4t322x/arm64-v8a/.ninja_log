@@ -1,3 +1,6 @@
 # ninja log v5
 2	7722	7848170545782452	CMakeFiles/flamapp.dir/native-lib.cpp.o	1aae7b42c10188f7
 7738	8043	7848170549082453	C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/build/intermediates/cxx/RelWithDebInfo/6m4t322x/obj/arm64-v8a/libflamapp.so	52cb5f1292eec8c5
+4	157	7851527984968336	build.ninja	92dbaf0eaa016e7a
+0	13	0	clean	f4e5c00c64afc96a
+0	19	0	clean	f4e5c00c64afc96a

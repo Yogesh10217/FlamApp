@@ -18,19 +18,22 @@ android {
 
         externalNativeBuild {
             cmake {
-                // ensure C++ standard and enable exceptions and RTTI
-                // If cppFlags already exists, add these flags to it.
+                // C++ flags - ensure exceptions and RTTI are enabled
                 cppFlags += listOf("-std=c++17", "-fexceptions", "-frtti")
-                // Tell CMake/NDK to use the shared libc++ runtime
-                arguments += listOf("-DANDROID_STL=c++_shared")
+
+                // CRITICAL: Tell CMake to use c++_shared (not c++_static)
+                arguments += listOf(
+                    "-DANDROID_STL=c++_shared",
+                    "-DANDROID_PLATFORM=android-24"
+                )
             }
         }
 
         ndk {
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+            // Only build for these ABIs
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
         }
     }
-
 
     buildTypes {
         release {
@@ -53,7 +56,6 @@ android {
 
     externalNativeBuild {
         cmake {
-            // Make sure this path exists (app/src/main/cpp/CMakeLists.txt)
             path = file("src/main/cpp/CMakeLists.txt")
             version = "3.22.1"
         }
@@ -61,13 +63,20 @@ android {
 
     sourceSets {
         getByName("main") {
-            // If you will include prebuilt .so or additional native libs, put them here
+            // Include jniLibs directory
             jniLibs.srcDir("src/main/jniLibs")
         }
     }
 
     buildFeatures {
         viewBinding = true
+    }
+
+    // Add this to automatically package libc++_shared.so
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = false
+        }
     }
 }
 

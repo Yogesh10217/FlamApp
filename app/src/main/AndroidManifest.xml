@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.flamapp">
 
+    <!-- Camera permission -->
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!-- Camera features -->
     <uses-feature android:name="android.hardware.camera" android:required="true" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
@@ -16,8 +18,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Flamapp">
-        <!-- existing activities / metadata remain unchanged -->
-
 
         <activity
             android:name=".MainActivity"
@@ -28,6 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

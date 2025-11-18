@@ -1,0 +1,3 @@
+C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/.cxx/Debug/6h4g4l2a/arm64-v8a/CMakeFiles/flamapp.dir
+C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/.cxx/Debug/6h4g4l2a/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/Yogesh E/AndroidStudioProjects/Flamapp/app/.cxx/Debug/6h4g4l2a/arm64-v8a/CMakeFiles/rebuild_cache.dir
