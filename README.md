@@ -25,6 +25,14 @@ Android app with OpenCV C++ edge detection processing via JNI, rendered using Op
 
 *Screenshot showing the real-time edge detection output on Android device*
 
+![Original Image](original%20image.jpg)
+
+*Original image before edge detection*
+
+![Edge Detected Image](edge%20detected.jpg)
+
+*Image after applying Flamapp edge detection*
+
 ## 📁 Project Structure
 
 ```
